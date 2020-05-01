@@ -1,7 +1,6 @@
 package com.example.springsecurityexample.api;
 
 import com.example.springsecurityexample.model.Quotation;
-import com.sun.org.apache.xpath.internal.operations.Quo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +31,10 @@ public class QuotationAPI {
     }
 
     @DeleteMapping("/api")
-    public ResponseEntity<List<Quotation>> deleteQuotation(@RequestParam int index){
+    public ResponseEntity deleteQuotation(@RequestParam int index){
         Optional<Quotation> quotation = Optional.ofNullable(quotations.get(index));
         if(quotation.isPresent()){
-            quotations.remove(quotation);
+            quotations.remove(index);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
