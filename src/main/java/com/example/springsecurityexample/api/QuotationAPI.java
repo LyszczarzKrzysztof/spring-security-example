@@ -26,14 +26,13 @@ public class QuotationAPI {
     }
 
     @PostMapping("/api")
-    public ResponseEntity<List<Quotation>> addQuotation(@RequestBody Quotation quotation){
+    public ResponseEntity<Quotation> addQuotation(@RequestBody Quotation quotation){
         return new ResponseEntity(quotations.add(quotation),HttpStatus.CREATED);
     }
 
     @DeleteMapping("/api")
-    public ResponseEntity deleteQuotation(@RequestParam int index){
-        Optional<Quotation> quotation = Optional.ofNullable(quotations.get(index));
-        if(quotation.isPresent()){
+    public ResponseEntity<Quotation> deleteQuotation(@RequestParam int index){
+        if(quotations.contains(quotations.get(index))){
             quotations.remove(index);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }else {
