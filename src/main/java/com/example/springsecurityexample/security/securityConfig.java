@@ -2,6 +2,7 @@ package com.example.springsecurityexample.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
@@ -14,16 +15,31 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService(){
-        UserDetails userDetails = User.withDefaultPasswordEncoder()
-                .username("user")
+        UserDetails moderator = User.withDefaultPasswordEncoder()
+                .username("moderator")
                 .password("password")
-                .roles("user")
+                .roles("MODERATOR")
                 .build();
-        return new InMemoryUserDetailsManager;
+
+        UserDetails admin = User.withDefaultPasswordEncoder()
+                .username("admin")
+                .password("passwordAdmin")
+                .roles("ADMIN")
+                .build();
+
+        return new InMemoryUserDetailsManager(moderator,admin);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
+        http.httpBasic().and().authorizeRequests()
+                .antMatchers(HttpMethod.GET,"/api").permitAll()
+                .antMatchers(HttpMethod.POST,"/api").hasRole("MODERATOR")
+                .antMatchers(HttpMethod.DELETE,"/api").hasRole("ADMIN")
+                .and().formLogin().permitAll()
+                .and()
+                .logout().permitAll()
+                .and()
+                .csrf().disable();
     }
 }
